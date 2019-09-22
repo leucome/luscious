@@ -62,6 +62,47 @@ minetest.override_item("default:dirt_with_grass", {
 	on_construct = on_construct,
 })
 
+--------------------------------------Ethereal Add On------------------------------------------------
+if minetest.get_modpath("ethereal") then
+minetest.override_item("ethereal:prairie_dirt", {
+	paramtype2 = "color",
+	drawtype = "color",
+	palette_index = 136,
+	color = "#7dea1eff",
+	palette = "luscious_grass_palette.png",
+	tiles = {"luscious_ethereal_prairie_grass.png", {name = "default_dirt.png", color = "white"}, "luscious_ethereal_prairie_grass.png"},
+	overlay_tiles = {"", "", {name = "luscious_dirt_overlay.png", color = "white"}},
+	place_param2 = 136,
+	drop  = "ethereal:prairie_dirt",
+	on_construct = on_construct,
+})
+
+minetest.override_item("ethereal:bamboo_dirt", {
+	paramtype2 = "color",
+	drawtype = "color",
+	palette_index = 136,
+	color = "#7dea1eff",
+	palette = "luscious_grass_palette.png",
+	tiles = {"luscious_ethereal_grass_bamboo_top.png", {name = "default_dirt.png", color = "white"}, "luscious_ethereal_grass_bamboo_top.png"},
+	overlay_tiles = {"", "", {name = "luscious_dirt_overlay.png", color = "white"}},
+	place_param2 = 136,
+	drop  = "ethereal:bamboo_dirt",
+	on_construct = on_construct,
+})
+
+minetest.override_item("ethereal:dry_dirt", {
+	paramtype2 = "color",
+	drawtype = "color",
+	palette_index = 136,
+	color = "#B79370ff",
+	palette = "luscious_ethereal_dry_dirt_palette.png",
+	tiles = {"luscious_ethereal_dry_dirt.png", {name = "default_dirt.png", color = "white"}, "luscious_ethereal_dry_dirt.png"},
+	place_param2 = 136,
+	drop  = "ethereal:dry_dirt",
+	on_construct = on_construct,
+})
+end
+
 for _, v in pairs({
 	"default:leaves",
 	"default:aspen_leaves",
@@ -114,6 +155,9 @@ end
 
 -- content ids
 local cn = {
+	["ethereal:bamboo_dirt"] = 1,
+	["ethereal:dry_dirt"] = 1,
+	["ethereal:prairie_dirt"] = 1,
 	["default:dirt_with_grass"] = 1,
 	["default:grass_1"] = 1,
 	["default:grass_2"] = 1,
