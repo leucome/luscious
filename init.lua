@@ -46,7 +46,9 @@ local function on_construct(pos)
 	local map = minetest.decompress(z)
 
 	local node = minetest.get_node(pos)
-	node.param2 = cmpy(string.byte(map, l + 1), pos.y)
+	local mv = cmpy(string.byte(map, l + 1), pos.y)
+	if mv < 2 then mv = 2 end
+	node.param2 = mv
 	minetest.swap_node(pos, node)
 end
 
@@ -233,6 +235,7 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
 			local vv = (x - minp.x) + ((z - minp.z) * chunksize)
 			if cs[data[vi]] then
 				local mv = cmpy(string.byte(map, vv + 1), y)
+				if mv < 2 then mv = 2 end
 				p2data[vi] = mv
 			end
 			vi = vi + 1
