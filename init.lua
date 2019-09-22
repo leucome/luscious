@@ -129,6 +129,7 @@ for _, v in pairs({
 		color = "#8afb94ff",
 		tiles = {tile},
 		place_param2 = 136,
+		visual_scale = 1.5,
 		on_construct = on_construct,
 	})
 end
@@ -154,6 +155,7 @@ for _, v in pairs({
 		color = "#7dea1eff",
 		tiles = {tile},
 		place_param2 = 136,
+		visual_scale = 2,
 		on_construct = on_construct,
 	})
 end
