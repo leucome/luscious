@@ -62,6 +62,30 @@ minetest.override_item("default:dirt_with_grass", {
 	on_construct = on_construct,
 })
 
+minetest.override_item("default:desert_sand", {
+	paramtype2 = "color",
+	drawtype = "color",
+	palette_index = 136,
+	color = "#c0825dff",
+	palette = "luscious_desert_sand_palette.png",
+	tiles = {"luscious_desert_sand.png", "luscious_desert_sand.png", "luscious_desert_sand.png"},
+	place_param2 = 136,
+	drop  = "default:desert_sand", -- Prevent the creation of a new item for each color.
+	on_construct = on_construct,
+})
+
+minetest.override_item("default:sand", {
+	paramtype2 = "color",
+	drawtype = "color",
+	palette_index = 136,
+	color = "#f3dec3ff",
+	palette = "luscious_default_sand_palette.png",
+	tiles = {"luscious_default_sand.png", "luscious_default_sand.png", "luscious_default_sand.png"},
+	place_param2 = 136,
+	drop  = "default:sand",
+	on_construct = on_construct,
+})
+
 for _, v in pairs({
 	"default:leaves",
 	"default:aspen_leaves",
@@ -114,6 +138,8 @@ end
 
 -- content ids
 local cn = {
+	["default:desert_sand"] = 1,
+	["default:sand"] = 1,
 	["default:dirt_with_grass"] = 1,
 	["default:grass_1"] = 1,
 	["default:grass_2"] = 1,
