@@ -28,7 +28,8 @@ end
 local function on_construct(pos)
 	-- get chunk from pos and apply color
 	local node = minetest.get_node(pos)
-	node.param2 = chose_color(pos)
+	local mv = chose_color(pos)
+	node.param2 = mv
 	minetest.swap_node(pos, node)
 end
 
