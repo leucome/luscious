@@ -11,42 +11,24 @@
 
 ]]--
 
-local wp = minetest.get_worldpath() .. "/luscious"
-minetest.mkdir(wp)
 
 local mgp = minetest.get_mapgen_params()
 local chunksize = 16 * mgp.chunksize
 
-local function cmpy(p2, y)
-	if y > 0 then
-		local h1 = p2 % 16
-		local h2 = math.floor(p2 / 16) * 16
-
-		h1 = h1 - math.max(math.min(h1, math.floor(y / 16)), 0)
-		return math.max(1, h1 + h2)
-	else
-		return math.max(1, p2)
-	end
+local function chose_color(pos)
+	-- Calculate color from biome heat and humidity.
+	local biome_data = minetest.get_biome_data(pos)
+	local hum1 = biome_data.humidity
+	local temp1 = biome_data.heat
+	local vh = math.floor(math.min(math.max(math.floor(hum1), 0), 100) / 6.6)
+	local vt = math.floor(math.min(math.max(math.floor(temp1), 0), 100) / 6.6)
+	return vh * 16 + vt
 end
+
 local function on_construct(pos)
-	-- get chunk from pos
-	local v = vector.apply(pos, function(a) return math.floor((a - 48) / chunksize) end)
-	local o = vector.subtract(pos, vector.apply(v, function(a) return (a * chunksize) + 48 end))
-	local l = o.z * (chunksize) + o.x
-	local p = minetest.hash_node_position(v)
-
-	local f = io.open(wp .. "/" .. string.format("%d", p), "r")
-	if not f then
-		minetest.log("error", "unable to find map for " .. string.format("%d", p))
-		return
-	end
-
-	local z = f:read("*a")
-	f:close()
-	local map = minetest.decompress(z)
-
+	-- get chunk from pos and apply color
 	local node = minetest.get_node(pos)
-	node.param2 = cmpy(string.byte(map, l + 1), pos.y)
+	node.param2 = chose_color(pos)
 	minetest.swap_node(pos, node)
 end
 
@@ -135,23 +117,6 @@ for k, _ in pairs(cn) do
 end
 
 minetest.register_on_generated(function(minp, maxp, blockseed)
-	local v = vector.apply(minp, function(a) return (a - 48) / chunksize end)
-	local heatmap = minetest.get_mapgen_object("heatmap")
-	local humiditymap = minetest.get_mapgen_object("humiditymap")
-	local map = ""
-	for i = 1, #heatmap do
-		local h1 = heatmap[i]
-		local h2 = humiditymap[i]
-		h1 = math.floor(math.min(math.max(math.floor(h1), 0), 100) / 6.6)
-		h2 = math.floor(math.min(math.max(math.floor(h2), 0), 100) / 6.6)
-		map = map .. string.char(h1 + (h2 * 16))
-	end
-	local p = string.format("%d", minetest.hash_node_position(v))
-
-	local f = assert(io.open(wp .. "/" .. p, "w"), wp .. "/" .. p)
-	f:write(minetest.compress(map))
-	f:close()
-
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
 	local area = VoxelArea:new{MinEdge = emin, MaxEdge = emax}
 	local data = vm:get_data()
@@ -162,7 +127,8 @@ minetest.register_on_generated(function(minp, maxp, blockseed)
 		for x = minp.x, maxp.x do
 			local vv = (x - minp.x) + ((z - minp.z) * chunksize)
 			if cs[data[vi]] then
-				local mv = cmpy(string.byte(map, vv + 1), y)
+				local p = vector.new(x, y, z)
+				local mv = chose_color(p)
 				p2data[vi] = mv
 			end
 			vi = vi + 1
